@@ -116,6 +116,10 @@ DisplayError DisplayBuiltIn::Init() {
 
   DLOGI("defer_power_state %d", defer_power_state_);
 
+  value = 0;
+  Debug::Get()->GetProperty(SKIP_REFRESH_RATE_CHANGE, &value);
+  skip_refresh_rate_change_ = (value == 1);
+
   return error;
 }
 
@@ -314,7 +318,9 @@ DisplayError DisplayBuiltIn::TeardownConcurrentWriteback(void) {
 DisplayError DisplayBuiltIn::SetRefreshRate(uint32_t refresh_rate, bool final_rate) {
   lock_guard<recursive_mutex> obj(recursive_mutex_);
 
-  if (!active_ || !hw_panel_info_.dynamic_fps) {
+  if (!active_ || !hw_panel_info_.dynamic_fps || qsync_mode_ != kQSyncModeNone
+      || skip_refresh_rate_change_) {
+
     return kErrorNotSupported;
   }
 

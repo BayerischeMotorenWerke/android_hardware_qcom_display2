@@ -108,6 +108,7 @@ class DisplayBuiltIn : public DisplayBase, HWEventHandler, DppsPropIntf {
   QSyncMode qsync_mode_ = kQSyncModeNone;
   LayerRect left_frame_roi_ = {};
   LayerRect right_frame_roi_ = {};
+  bool skip_refresh_rate_change_ = false;
 };
 
 }  // namespace sdm
